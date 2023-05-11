@@ -126,11 +126,20 @@ public class LineChartActivity2 extends DemoBase implements OnSeekBarChangeListe
         YAxis rightAxis = chart.getAxisRight();
         rightAxis.setTypeface(tfLight);
         rightAxis.setTextColor(Color.RED);
-        rightAxis.setAxisMaximum(900);
-        rightAxis.setAxisMinimum(-200);
+        rightAxis.setAxisMaximum(700);
+        rightAxis.setAxisMinimum(200);
         rightAxis.setDrawGridLines(false);
         rightAxis.setDrawZeroLine(false);
         rightAxis.setGranularityEnabled(false);
+
+        YAxis thirdAxis = chart.getAxisThird();
+        thirdAxis.setTypeface(tfLight);
+        thirdAxis.setTextColor(Color.YELLOW);
+        thirdAxis.setAxisMaximum(1000);
+        thirdAxis.setAxisMinimum(600);
+        thirdAxis.setDrawGridLines(false);
+        thirdAxis.setDrawZeroLine(false);
+        thirdAxis.setGranularityEnabled(false);
     }
 
     private void setData(int count, float range) {
@@ -152,7 +161,7 @@ public class LineChartActivity2 extends DemoBase implements OnSeekBarChangeListe
         ArrayList<Entry> values3 = new ArrayList<>();
 
         for (int i = 0; i < count; i++) {
-            float val = (float) (Math.random() * range) + 500;
+            float val = (float) (Math.random() * range) + 900;
             values3.add(new Entry(i, val));
         }
 
@@ -163,9 +172,9 @@ public class LineChartActivity2 extends DemoBase implements OnSeekBarChangeListe
             set1 = (LineDataSet) chart.getData().getDataSetByIndex(0);
             set2 = (LineDataSet) chart.getData().getDataSetByIndex(1);
             set3 = (LineDataSet) chart.getData().getDataSetByIndex(2);
-            set1.setValues(values1);
-            set2.setValues(values2);
-            set3.setValues(values3);
+            set1.setEntries(values1);
+            set2.setEntries(values2);
+            set3.setEntries(values3);
             chart.getData().notifyDataChanged();
             chart.notifyDataSetChanged();
         } else {
@@ -181,10 +190,6 @@ public class LineChartActivity2 extends DemoBase implements OnSeekBarChangeListe
             set1.setFillColor(ColorTemplate.getHoloBlue());
             set1.setHighLightColor(Color.rgb(244, 117, 117));
             set1.setDrawCircleHole(false);
-            //set1.setFillFormatter(new MyFillFormatter(0f));
-            //set1.setDrawHorizontalHighlightIndicator(false);
-            //set1.setVisible(false);
-            //set1.setCircleHoleColor(Color.WHITE);
 
             // create a dataset and give it a type
             set2 = new LineDataSet(values2, "DataSet 2");
@@ -197,10 +202,9 @@ public class LineChartActivity2 extends DemoBase implements OnSeekBarChangeListe
             set2.setFillColor(Color.RED);
             set2.setDrawCircleHole(false);
             set2.setHighLightColor(Color.rgb(244, 117, 117));
-            //set2.setFillFormatter(new MyFillFormatter(900f));
 
             set3 = new LineDataSet(values3, "DataSet 3");
-            set3.setAxisDependency(AxisDependency.RIGHT);
+            set3.setAxisDependency(AxisDependency.THIRD);
             set3.setColor(Color.YELLOW);
             set3.setCircleColor(Color.WHITE);
             set3.setLineWidth(2f);
@@ -390,10 +394,6 @@ public class LineChartActivity2 extends DemoBase implements OnSeekBarChangeListe
 
         chart.centerViewToAnimated(e.getX(), e.getY(), chart.getData().getDataSetByIndex(h.getDataSetIndex())
                 .getAxisDependency(), 500);
-        //chart.zoomAndCenterAnimated(2.5f, 2.5f, e.getX(), e.getY(), chart.getData().getDataSetByIndex(dataSetIndex)
-        // .getAxisDependency(), 1000);
-        //chart.zoomAndCenterAnimated(1.8f, 1.8f, e.getX(), e.getY(), chart.getData().getDataSetByIndex(dataSetIndex)
-        // .getAxisDependency(), 1000);
     }
 
     @Override
