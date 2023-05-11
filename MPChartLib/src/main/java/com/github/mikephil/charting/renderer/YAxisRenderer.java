@@ -74,6 +74,16 @@ public class YAxisRenderer extends AxisRenderer {
                 xPos = mViewPortHandler.offsetLeft() + xoffset;
             }
 
+        } else if(dependency == AxisDependency.THIRD) { //the third axis labels are drawn next to the right axis
+
+            if (labelPosition == YAxisLabelPosition.OUTSIDE_CHART) {
+                mAxisLabelPaint.setTextAlign(Align.LEFT);
+                xPos = mViewPortHandler.contentRight() + (xoffset * 6); //the offset might need to be dynamic
+            } else {
+                mAxisLabelPaint.setTextAlign(Align.RIGHT);
+                xPos = mViewPortHandler.contentRight() - (xoffset * 6); //the offset might need to be dynamic
+            }
+
         } else {
 
             if (labelPosition == YAxisLabelPosition.OUTSIDE_CHART) {
@@ -99,6 +109,9 @@ public class YAxisRenderer extends AxisRenderer {
 
         if (mYAxis.getAxisDependency() == AxisDependency.LEFT) {
             c.drawLine(mViewPortHandler.contentLeft(), mViewPortHandler.contentTop(), mViewPortHandler.contentLeft(),
+                    mViewPortHandler.contentBottom(), mAxisLinePaint);
+        } else if(mYAxis.getAxisDependency() == AxisDependency.THIRD) { //not sure what this does!
+            c.drawLine(mViewPortHandler.contentRight(), mViewPortHandler.contentTop(), mViewPortHandler.contentRight(),
                     mViewPortHandler.contentBottom(), mAxisLinePaint);
         } else {
             c.drawLine(mViewPortHandler.contentRight(), mViewPortHandler.contentTop(), mViewPortHandler.contentRight(),

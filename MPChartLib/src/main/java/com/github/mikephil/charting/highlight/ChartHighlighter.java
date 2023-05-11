@@ -73,6 +73,8 @@ public class ChartHighlighter<T extends BarLineScatterCandleBubbleDataProvider> 
             return null;
         }
 
+        //TODO: Add third axis dependency here
+
         float leftAxisMinDist = getMinimumDistance(closestValues, y, YAxis.AxisDependency.LEFT);
         float rightAxisMinDist = getMinimumDistance(closestValues, y, YAxis.AxisDependency.RIGHT);
 

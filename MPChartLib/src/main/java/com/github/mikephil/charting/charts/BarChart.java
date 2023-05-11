@@ -75,6 +75,8 @@ public class BarChart extends BarLineChartBase<BarData> implements BarDataProvid
         mAxisLeft.calculate(mData.getYMin(YAxis.AxisDependency.LEFT), mData.getYMax(YAxis.AxisDependency.LEFT));
         mAxisRight.calculate(mData.getYMin(YAxis.AxisDependency.RIGHT), mData.getYMax(YAxis.AxisDependency
                 .RIGHT));
+        mAxisThird.calculate(mData.getYMin(YAxis.AxisDependency.THIRD), mData.getYMax(YAxis.AxisDependency
+                .THIRD));
     }
 
     /**

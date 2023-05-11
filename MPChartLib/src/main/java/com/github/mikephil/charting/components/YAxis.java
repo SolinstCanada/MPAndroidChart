@@ -110,7 +110,7 @@ public class YAxis extends AxisBase {
      * @author Philipp Jahoda
      */
     public enum AxisDependency {
-        LEFT, RIGHT
+        LEFT, RIGHT, THIRD
     }
 
     public YAxis() {

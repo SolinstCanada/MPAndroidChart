@@ -49,6 +49,10 @@ public abstract class ChartData<T extends IDataSet<? extends Entry>> {
 
     protected float mRightAxisMin = Float.MAX_VALUE;
 
+    protected float mThirdAxisMax = -Float.MAX_VALUE;
+
+    protected float mThirdAxisMin = Float.MAX_VALUE;
+
     /**
      * array that holds all DataSets the ChartData object represents
      */
@@ -183,6 +187,25 @@ public abstract class ChartData<T extends IDataSet<? extends Entry>> {
                 }
             }
         }
+
+        // third axis
+        T firstThird = getFirstThird(mDataSets);
+
+        if (firstThird != null) {
+
+            mThirdAxisMax = firstThird.getYMax();
+            mThirdAxisMin = firstThird.getYMin();
+
+            for (T dataSet : mDataSets) {
+                if (dataSet.getAxisDependency() == AxisDependency.THIRD) {
+                    if (dataSet.getYMin() < mThirdAxisMin)
+                        mThirdAxisMin = dataSet.getYMin();
+
+                    if (dataSet.getYMax() > mThirdAxisMax)
+                        mThirdAxisMax = dataSet.getYMax();
+                }
+            }
+        }
     }
 
     /** ONLY GETTERS AND SETTERS BELOW THIS */
@@ -220,6 +243,14 @@ public abstract class ChartData<T extends IDataSet<? extends Entry>> {
                 return mRightAxisMin;
             } else
                 return mLeftAxisMin;
+
+        } else if (axis == AxisDependency.THIRD) {
+
+            if (mThirdAxisMin == Float.MAX_VALUE) { //TODO: Make this better
+                return mLeftAxisMin;
+            } else
+                return mThirdAxisMin;
+
         } else {
             if (mRightAxisMin == Float.MAX_VALUE) {
                 return mLeftAxisMin;
@@ -250,6 +281,12 @@ public abstract class ChartData<T extends IDataSet<? extends Entry>> {
                 return mRightAxisMax;
             } else
                 return mLeftAxisMax;
+        } else if(axis == AxisDependency.THIRD) {
+
+            if (mThirdAxisMax == -Float.MAX_VALUE) { //TODO: Work on this!
+                return mLeftAxisMax;
+            } else
+                return mThirdAxisMax;
         } else {
             if (mRightAxisMax == -Float.MAX_VALUE) {
                 return mLeftAxisMax;
@@ -469,6 +506,11 @@ public abstract class ChartData<T extends IDataSet<? extends Entry>> {
                 mLeftAxisMax = e.getY();
             if (mLeftAxisMin > e.getY())
                 mLeftAxisMin = e.getY();
+        } else if (axis == AxisDependency.THIRD) {
+            if (mThirdAxisMax < e.getY())
+                mThirdAxisMax = e.getY();
+            if (mThirdAxisMin > e.getY())
+                mThirdAxisMin = e.getY();
         } else {
             if (mRightAxisMax < e.getY())
                 mRightAxisMax = e.getY();
@@ -500,6 +542,11 @@ public abstract class ChartData<T extends IDataSet<? extends Entry>> {
                 mLeftAxisMax = d.getYMax();
             if (mLeftAxisMin > d.getYMin())
                 mLeftAxisMin = d.getYMin();
+        } else if(d.getAxisDependency() == AxisDependency.THIRD) {
+            if (mThirdAxisMax < d.getYMax())
+                mThirdAxisMax = d.getYMax();
+            if (mThirdAxisMin > d.getYMin())
+                mThirdAxisMin = d.getYMin();
         } else {
             if (mRightAxisMax < d.getYMax())
                 mRightAxisMax = d.getYMax();
@@ -649,6 +696,20 @@ public abstract class ChartData<T extends IDataSet<? extends Entry>> {
     public T getFirstRight(List<T> sets) {
         for (T dataSet : sets) {
             if (dataSet.getAxisDependency() == AxisDependency.RIGHT)
+                return dataSet;
+        }
+        return null;
+    }
+
+    /**
+     * Returns the first DataSet from the datasets-array that has it's dependency on the third axis.
+     * Returns null if no DataSet with third dependency could be found.
+     *
+     * @return
+     */
+    public T getFirstThird(List<T> sets) {
+        for (T dataSet : sets) {
+            if (dataSet.getAxisDependency() == AxisDependency.THIRD)
                 return dataSet;
         }
         return null;

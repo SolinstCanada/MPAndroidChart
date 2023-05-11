@@ -123,15 +123,18 @@ public abstract class BarLineChartBase<T extends BarLineScatterCandleBubbleData<
     protected YAxis mAxisLeft;
 
     /**
-     * the object representing the labels on the right y-axis
+     * the objects representing the labels on the right y-axis
      */
     protected YAxis mAxisRight;
+    protected YAxis mAxisThird;
 
     protected YAxisRenderer mAxisRendererLeft;
     protected YAxisRenderer mAxisRendererRight;
+    protected YAxisRenderer mAxisRendererThird;
 
     protected Transformer mLeftAxisTransformer;
     protected Transformer mRightAxisTransformer;
+    protected Transformer mThirdAxisTransformer;
 
     protected XAxisRenderer mXAxisRenderer;
 
@@ -156,12 +159,15 @@ public abstract class BarLineChartBase<T extends BarLineScatterCandleBubbleData<
 
         mAxisLeft = new YAxis(AxisDependency.LEFT);
         mAxisRight = new YAxis(AxisDependency.RIGHT);
+        mAxisThird = new YAxis(AxisDependency.THIRD);
 
         mLeftAxisTransformer = new Transformer(mViewPortHandler);
         mRightAxisTransformer = new Transformer(mViewPortHandler);
+        mThirdAxisTransformer = new Transformer(mViewPortHandler);
 
         mAxisRendererLeft = new YAxisRenderer(mViewPortHandler, mAxisLeft, mLeftAxisTransformer);
         mAxisRendererRight = new YAxisRenderer(mViewPortHandler, mAxisRight, mRightAxisTransformer);
+        mAxisRendererThird = new YAxisRenderer(mViewPortHandler, mAxisThird, mThirdAxisTransformer);
 
         mXAxisRenderer = new XAxisRenderer(mViewPortHandler, mXAxis, mLeftAxisTransformer);
 
@@ -207,12 +213,16 @@ public abstract class BarLineChartBase<T extends BarLineScatterCandleBubbleData<
         if (mAxisRight.isEnabled())
             mAxisRendererRight.computeAxis(mAxisRight.mAxisMinimum, mAxisRight.mAxisMaximum, mAxisRight.isInverted());
 
+        if (mAxisThird.isEnabled())
+            mAxisRendererThird.computeAxis(mAxisThird.mAxisMinimum, mAxisThird.mAxisMaximum, mAxisThird.isInverted());
+
         if (mXAxis.isEnabled())
             mXAxisRenderer.computeAxis(mXAxis.mAxisMinimum, mXAxis.mAxisMaximum, false);
 
         mXAxisRenderer.renderAxisLine(canvas);
         mAxisRendererLeft.renderAxisLine(canvas);
         mAxisRendererRight.renderAxisLine(canvas);
+        mAxisRendererThird.renderAxisLine(canvas);
 
         if (mXAxis.isDrawGridLinesBehindDataEnabled())
             mXAxisRenderer.renderGridLines(canvas);
@@ -223,6 +233,9 @@ public abstract class BarLineChartBase<T extends BarLineScatterCandleBubbleData<
         if (mAxisRight.isDrawGridLinesBehindDataEnabled())
             mAxisRendererRight.renderGridLines(canvas);
 
+        if (mAxisThird.isDrawGridLinesBehindDataEnabled())
+            mAxisRendererThird.renderGridLines(canvas);
+
         if (mXAxis.isEnabled() && mXAxis.isDrawLimitLinesBehindDataEnabled())
             mXAxisRenderer.renderLimitLines(canvas);
 
@@ -231,6 +244,9 @@ public abstract class BarLineChartBase<T extends BarLineScatterCandleBubbleData<
 
         if (mAxisRight.isEnabled() && mAxisRight.isDrawLimitLinesBehindDataEnabled())
             mAxisRendererRight.renderLimitLines(canvas);
+
+        if (mAxisThird.isEnabled() && mAxisThird.isDrawLimitLinesBehindDataEnabled())
+            mAxisRendererThird.renderLimitLines(canvas);
 
         int clipRestoreCount = canvas.save();
 
@@ -250,6 +266,9 @@ public abstract class BarLineChartBase<T extends BarLineScatterCandleBubbleData<
         if (!mAxisRight.isDrawGridLinesBehindDataEnabled())
             mAxisRendererRight.renderGridLines(canvas);
 
+        if (!mAxisThird.isDrawGridLinesBehindDataEnabled())
+            mAxisRendererThird.renderGridLines(canvas);
+
         // if highlighting is enabled
         if (valuesToHighlight())
             mRenderer.drawHighlighted(canvas, mIndicesToHighlight);
@@ -268,9 +287,13 @@ public abstract class BarLineChartBase<T extends BarLineScatterCandleBubbleData<
         if (mAxisRight.isEnabled() && !mAxisRight.isDrawLimitLinesBehindDataEnabled())
             mAxisRendererRight.renderLimitLines(canvas);
 
+        if (mAxisThird.isEnabled() && !mAxisThird.isDrawLimitLinesBehindDataEnabled())
+            mAxisRendererThird.renderLimitLines(canvas);
+
         mXAxisRenderer.renderAxisLabels(canvas);
         mAxisRendererLeft.renderAxisLabels(canvas);
         mAxisRendererRight.renderAxisLabels(canvas);
+        mAxisRendererThird.renderAxisLabels(canvas);
 
         if (isClipValuesToContentEnabled()) {
             clipRestoreCount = canvas.save();
@@ -313,6 +336,10 @@ public abstract class BarLineChartBase<T extends BarLineScatterCandleBubbleData<
             Log.i(LOG_TAG, "Preparing Value-Px Matrix, xmin: " + mXAxis.mAxisMinimum + ", xmax: "
                     + mXAxis.mAxisMaximum + ", xdelta: " + mXAxis.mAxisRange);
 
+        mThirdAxisTransformer.prepareMatrixValuePx(mXAxis.mAxisMinimum,
+                mXAxis.mAxisRange,
+                mAxisThird.mAxisRange,
+                mAxisThird.mAxisMinimum);
         mRightAxisTransformer.prepareMatrixValuePx(mXAxis.mAxisMinimum,
                 mXAxis.mAxisRange,
                 mAxisRight.mAxisRange,
@@ -325,6 +352,7 @@ public abstract class BarLineChartBase<T extends BarLineScatterCandleBubbleData<
 
     protected void prepareOffsetMatrix() {
 
+        mThirdAxisTransformer.prepareMatrixOffset(mAxisThird.isInverted());
         mRightAxisTransformer.prepareMatrixOffset(mAxisRight.isInverted());
         mLeftAxisTransformer.prepareMatrixOffset(mAxisLeft.isInverted());
     }
@@ -348,6 +376,7 @@ public abstract class BarLineChartBase<T extends BarLineScatterCandleBubbleData<
 
         mAxisRendererLeft.computeAxis(mAxisLeft.mAxisMinimum, mAxisLeft.mAxisMaximum, mAxisLeft.isInverted());
         mAxisRendererRight.computeAxis(mAxisRight.mAxisMinimum, mAxisRight.mAxisMaximum, mAxisRight.isInverted());
+        mAxisRendererThird.computeAxis(mAxisThird.mAxisMinimum, mAxisThird.mAxisMaximum, mAxisThird.isInverted());
         mXAxisRenderer.computeAxis(mXAxis.mAxisMinimum, mXAxis.mAxisMaximum, false);
 
         if (mLegend != null)
@@ -378,6 +407,10 @@ public abstract class BarLineChartBase<T extends BarLineScatterCandleBubbleData<
             mAxisRight.calculate(mData.getYMin(AxisDependency.RIGHT),
                     mData.getYMax(AxisDependency.RIGHT));
 
+        if (mAxisThird.isEnabled())
+            mAxisThird.calculate(mData.getYMin(AxisDependency.THIRD),
+                    mData.getYMax(AxisDependency.THIRD));
+
         calculateOffsets();
     }
 
@@ -390,6 +423,8 @@ public abstract class BarLineChartBase<T extends BarLineScatterCandleBubbleData<
         mAxisLeft.calculate(mData.getYMin(AxisDependency.LEFT), mData.getYMax(AxisDependency.LEFT));
         mAxisRight.calculate(mData.getYMin(AxisDependency.RIGHT), mData.getYMax(AxisDependency
                 .RIGHT));
+        mAxisThird.calculate(mData.getYMin(AxisDependency.THIRD), mData.getYMax(AxisDependency
+                .THIRD));
     }
 
     protected void calculateLegendOffsets(RectF offsets) {
@@ -493,6 +528,11 @@ public abstract class BarLineChartBase<T extends BarLineScatterCandleBubbleData<
                         .getPaintAxisLabels());
             }
 
+            if (mAxisThird.needsOffset()) {
+                offsetRight += mAxisThird.getRequiredWidthSpace(mAxisRendererThird
+                        .getPaintAxisLabels());
+            }
+
             if (mXAxis.isEnabled() && mXAxis.isDrawLabelsEnabled()) {
 
                 float xLabelHeight = mXAxis.mLabelRotatedHeight + mXAxis.getYOffset();
@@ -563,6 +603,8 @@ public abstract class BarLineChartBase<T extends BarLineScatterCandleBubbleData<
     public Transformer getTransformer(AxisDependency which) {
         if (which == AxisDependency.LEFT)
             return mLeftAxisTransformer;
+        else if (which == AxisDependency.THIRD)
+            return mThirdAxisTransformer;
         else
             return mRightAxisTransformer;
     }
@@ -1009,6 +1051,8 @@ public abstract class BarLineChartBase<T extends BarLineScatterCandleBubbleData<
     protected float getAxisRange(AxisDependency axis) {
         if (axis == AxisDependency.LEFT)
             return mAxisLeft.mAxisRange;
+        else if (axis == AxisDependency.THIRD)
+            return mAxisThird.mAxisRange;
         else
             return mAxisRight.mAxisRange;
     }
@@ -1471,6 +1515,10 @@ public abstract class BarLineChartBase<T extends BarLineScatterCandleBubbleData<
         return mAxisRight;
     }
 
+    public YAxis getAxisThird() {
+        return mAxisThird;
+    }
+
     /**
      * Returns the y-axis object to the corresponding AxisDependency. In the
      * horizontal bar-chart, LEFT == top, RIGHT == BOTTOM
@@ -1481,6 +1529,8 @@ public abstract class BarLineChartBase<T extends BarLineScatterCandleBubbleData<
     public YAxis getAxis(AxisDependency axis) {
         if (axis == AxisDependency.LEFT)
             return mAxisLeft;
+        else if (axis == AxisDependency.THIRD)
+            return mAxisThird;
         else
             return mAxisRight;
     }
@@ -1568,6 +1618,10 @@ public abstract class BarLineChartBase<T extends BarLineScatterCandleBubbleData<
         return mAxisRendererRight;
     }
 
+    public YAxisRenderer getRendererThirdYAxis() {
+        return mAxisRendererThird;
+    }
+
     /**
      * Sets a custom axis renderer for the right acis and overwrites the existing one.
      *
@@ -1577,14 +1631,24 @@ public abstract class BarLineChartBase<T extends BarLineScatterCandleBubbleData<
         mAxisRendererRight = rendererRightYAxis;
     }
 
+    public void setRendererThirdYAxis(YAxisRenderer rendererThirdYAxis) {
+        mAxisRendererThird = rendererThirdYAxis;
+    }
+
     @Override
     public float getYChartMax() {
-        return Math.max(mAxisLeft.mAxisMaximum, mAxisRight.mAxisMaximum);
+        float twoAxesMax = Math.max(mAxisLeft.mAxisMaximum, mAxisRight.mAxisMaximum);
+
+        if(mAxisThird.mAxisMaximum > 0f) return Math.max(mAxisThird.mAxisMaximum, twoAxesMax); //TODO: Check third axis value
+        else return Math.max(mAxisLeft.mAxisMaximum, mAxisRight.mAxisMaximum);
     }
 
     @Override
     public float getYChartMin() {
-        return Math.min(mAxisLeft.mAxisMinimum, mAxisRight.mAxisMinimum);
+        float twoAxesMin = Math.min(mAxisLeft.mAxisMinimum, mAxisRight.mAxisMinimum);
+
+        if(mAxisThird.mAxisMinimum > 0f) return Math.max(mAxisThird.mAxisMinimum, twoAxesMin); //TODO: Check third axis value
+        else return Math.max(mAxisLeft.mAxisMinimum, mAxisRight.mAxisMinimum);
     }
 
     /**
@@ -1596,6 +1660,8 @@ public abstract class BarLineChartBase<T extends BarLineScatterCandleBubbleData<
         if (mAxisLeft.isInverted())
             return true;
         if (mAxisRight.isInverted())
+            return true;
+        if (mAxisThird.isInverted())
             return true;
         return false;
     }
