@@ -45,6 +45,13 @@ task javadocJar(type: Jar, dependsOn: javadoc) {
     from javadoc.destinationDir
 }
 
+task createJar(type: Copy) {
+    from('build/intermediates/runtime-library-classes/debug/')
+    into('libs/jars/')
+    include('classes.jar')
+    rename('classes.jar', 'mpandroidchart.jar')
+}
+
 artifacts {
     archives sourcesJar
     archives javadocJar
