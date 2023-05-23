@@ -34,6 +34,7 @@ public class BarBuffer extends AbstractBuffer<IBarDataSet> {
 
     protected void addBar(float left, float top, float right, float bottom) {
 
+        if(index >= (buffer.length - 1)) return;
         buffer[index++] = left;
         buffer[index++] = top;
         buffer[index++] = right;
